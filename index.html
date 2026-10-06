@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Discovery Engine | NEXLeap Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 pb-20">
+
+    <header class="bg-white border-b p-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-700">AI Discovery Engine</h1>
+            <div id="analytics" class="text-[10px] bg-slate-100 p-2 rounded border font-mono">
+                [Demo Analytics — Simulated] Searches: 0 | Successful Retrievals: 0 | Zero Results: 0 | AI→Classic Switches: 0
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-4 md:p-6">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border mb-6">
+            <div class="flex gap-4 mb-4">
+                <button id="aiBtn" onclick="setMode('AI')" class="px-5 py-2 rounded-full font-semibold bg-blue-600 text-white">AI Search</button>
+                <button id="classicBtn" onclick="setMode('Classic')" class="px-5 py-2 rounded-full font-semibold bg-slate-100">Classic Search</button>
+                <button onclick="resetDemo()" class="ml-auto text-xs text-slate-400 hover:text-slate-600 underline">Reset Demo</button>
+            </div>
+            <p id="modeDesc" class="text-sm text-slate-500 mb-4 italic">AI Search — Demo Simulation: Natural-language search with AI interpretation.</p>
+
+            <div class="flex gap-2">
+                <input type="text" id="searchInput" placeholder="Try 'John', 'Paris', 'Dog', '2024'..." class="flex-grow p-3 border rounded-xl outline-blue-500">
+                <button onclick="performSearch()" class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-800">Search</button>
+            </div>
+
+            <div id="filters" class="hidden mt-4 flex flex-wrap gap-3 p-4 bg-slate-50 rounded-xl border">
+                <select id="fYear" class="p-2 border rounded-lg text-sm"><option value="">Any Year</option><option value="2024">2024</option><option value="2023">2023</option></select>
+                <select id="fLoc" class="p-2 border rounded-lg text-sm"><option value="">Any Location</option><option value="Paris">Paris</option><option value="Beach">Beach</option></select>
+                <select id="fPerson" class="p-2 border rounded-lg text-sm"><option value="">Any Person</option><option value="John">John</option><option value="Sarah">Sarah</option></select>
+            </div>
+        </div>
+
+        <div id="failureState" class="hidden bg-orange-50 border border-orange-200 p-6 rounded-xl text-center mb-6">
+            <p class="text-orange-800 font-medium mb-3">Can't find what you're looking for?</p>
+            <button onclick="switchToClassicFromFailure()" class="bg-orange-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-orange-700">Try Classic Search</button>
+        </div>
+        
+        <div id="switchMsg" class="hidden text-center text-sm text-blue-600 mb-4 font-medium italic">
+            Classic Search is active. Your search is preserved. Refine using metadata filters.
+        </div>
+
+        <div id="resultsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+    </main>
+
+    <script>
+        const photos = [
+            { id: 1, year: "2024", loc: "Paris", person: "John", cat: "Travel", desc: "John at Eiffel Tower", url: "https://images.unsplash.com/photo-1502602898657-34917651c87d?w=400" },
+            { id: 2, year: "2024", loc: "Beach", person: "John", cat: "Travel", desc: "John surfing", url: "https://images.unsplash.com/photo-1502680390469-375c88560341?w=400" },
+            { id: 3, year: "2023", loc: "Home", person: "Sarah", cat: "Family", desc: "Sarah Christmas dinner", url: "https://images.unsplash.com/photo-1512453979798-5ea26e676100?w=400" },
+            { id: 4, year: "2024", loc: "Beach", person: "Sarah", cat: "Nature", desc: "Sarah beach sunset", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400" },
+            { id: 5, year: "2024", loc: "Park", person: "None", cat: "Nature", desc: "Dog wearing a hat", url: "https://images.unsplash.com/photo-1518001488663-b3c9900c7322?w=400" },
+            { id: 6, year: "2023", loc: "Paris", person: "John", cat: "Travel", desc: "John Louvre", url: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=400" },
+            { id: 7, year: "2024", loc: "Home", person: "Sarah", cat: "Event", desc: "Sarah birthday party", url: "https://images.unsplash.com/photo-1527529482837-469817946ce5?w=400" },
+            { id: 8, year: "2023", loc: "Beach", person: "John", cat: "Travel", desc: "John beach trip", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400" },
+            { id: 9, year: "2024", loc: "Park", person: "John", cat: "Event", desc: "John park picnic", url: "https://images.unsplash.com/photo-1505672678657-cc7037c95e15?w=400" },
+            { id: 10, year: "2023", loc: "Home", person: "Sarah", cat: "Family", desc: "Sarah wedding ceremony", url: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400" },
+            { id: 11, year: "2024", loc: "Paris", person: "Sarah", cat: "Travel", desc: "Sarah Paris street", url: "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=400" },
+            { id: 12, year: "2023", loc: "Home", person: "None", cat: "Nature", desc: "Dog sleeping", url: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400" }
+        ];
+
+        let stats = { searches: 0, ai: 0, classic: 0, switches: 0, success: 0, zero: 0 }, retrievedIds = new Set();
+        let mode = 'AI';
+
+        function setMode(newMode) {
+            mode = newMode;
+            document.getElementById('aiBtn').className = mode === 'AI' ? 'px-5 py-2 rounded-full font-semibold bg-blue-600 text-white' : 'px-5 py-2 rounded-full font-semibold bg-slate-100';
+            document.getElementById('classicBtn').className = mode === 'Classic' ? 'px-5 py-2 rounded-full font-semibold bg-blue-600 text-white' : 'px-5 py-2 rounded-full font-semibold bg-slate-100';
+            document.getElementById('modeDesc').innerText = mode === 'AI' ? "AI Search — Demo Simulation: Natural-language search with AI interpretation." : "Classic Search — Demo: Predictable metadata-based search. You control the filters.";
+            document.getElementById('filters').style.display = mode === 'Classic' ? 'flex' : 'none';
+        }
+
+        function performSearch() {
+            stats.searches++;
+            mode === 'AI' ? stats.ai++ : stats.classic++;
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const grid = document.getElementById('resultsGrid');
+            grid.innerHTML = '';
+            let results = [];
+
+            if(mode === 'AI') {
+                if(query.includes('john') && query.includes('beach')) results = [photos[1], photos[7]]; 
+                else if(query.includes('dog')) results = [photos[4]];
+                else if(query.includes('paris')) results = [photos[0], photos[5], photos[10]];
+                else if(query.includes('birthday')) results = []; 
+                else if(query) results = photos.filter(p => p.desc.toLowerCase().includes(query));
+            } else {
+                const y = document.getElementById('fYear').value;
+                const l = document.getElementById('fLoc').value;
+                const p = document.getElementById('fPerson').value;
+                results = photos.filter(ph => 
+                    (ph.desc.toLowerCase().includes(query) || ph.loc.toLowerCase().includes(query) || ph.person.toLowerCase().includes(query) || ph.year == query) &&
+                    (!y || ph.year == y) && (!l || ph.loc == l) && (!p || ph.person == p)
+                );
+            }
+
+            if(results.length === 0) {
+                stats.zero++;
+                grid.innerHTML = '<p class="col-span-full text-center py-10">No results found.</p>';
+                if(mode === 'AI') document.getElementById('failureState').style.display = 'block';
+            } else {
+                document.getElementById('failureState').style.display = 'none';
+                results.forEach(p => {
+                    grid.innerHTML += `<div onclick="recordSuccess(${p.id})" class="cursor-pointer bg-white p-2 rounded-xl border shadow-sm hover:ring-2 ring-blue-500">
+                        <img src="${p.url}" class="w-full h-40 object-cover rounded-lg">
+                        <p class="text-sm font-bold mt-2">${p.desc}</p>
+                        <p class="text-[10px] text-slate-400 mt-1">${mode === 'AI' ? 'Possible Match' : 'Metadata Match'}</p>
+                    </div>`;
+                });
+            }
+            updateStats();
+        }
+
+        function recordSuccess(id) { if(!retrievedIds.has(id)) { stats.success++; retrievedIds.add(id); updateStats(); } }
+        function switchToClassicFromFailure() { stats.switches++; setMode('Classic'); document.getElementById('failureState').style.display = 'none'; document.getElementById('switchMsg').style.display = 'block'; performSearch(); }
+        function resetDemo() { location.reload(); }
+        function updateStats() { document.getElementById('analytics').innerText = `[Demo Analytics — Simulated] Searches: ${stats.searches} | Successful Retrievals: ${stats.success} | Zero Results: ${stats.zero} | AI→Classic Switches: ${stats.switches}`; }
+    </script>
+</body>
+</html>
