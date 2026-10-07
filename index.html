@@ -3,125 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Discovery Engine | NEXLeap Demo</title>
+    <title>AI Discovery Engine | NextLeap Project</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 2rem; border-radius: 1rem; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-900 pb-20">
 
-    <header class="bg-white border-b p-4">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-blue-700">AI Discovery Engine</h1>
-            <div id="analytics" class="text-[10px] bg-slate-100 p-2 rounded border font-mono">
-                [Demo Analytics — Simulated] Searches: 0 | Successful Retrievals: 0 | Zero Results: 0 | AI→Classic Switches: 0
-            </div>
+    <div id="evidenceModal" class="modal">
+        <div class="modal-content" id="modalBody"></div>
+    </div>
+
+    <nav class="sticky top-0 bg-white border-b z-50 p-4 shadow-sm">
+        <div class="max-w-6xl mx-auto flex gap-6 overflow-x-auto text-sm font-bold text-slate-600">
+            <a href="#findings" class="hover:text-blue-700">Findings</a>
+            <a href="#patterns" class="hover:text-blue-700">Patterns</a>
+            <a href="#problems" class="hover:text-blue-700">Problems</a>
+            <a href="#comparison" class="hover:text-blue-700">Comparison</a>
+            <a href="#opportunities" class="hover:text-blue-700">Opportunities</a>
+            <a href="#prototype" class="hover:text-blue-700">Prototype</a>
+            <a href="#traceability" class="hover:text-blue-700">Traceability</a>
+            <a href="#evidence" class="hover:text-blue-700">Evidence Explorer</a>
         </div>
-    </header>
+    </nav>
 
-    <main class="max-w-6xl mx-auto p-4 md:p-6">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border mb-6">
-            <div class="flex gap-4 mb-4">
-                <button id="aiBtn" onclick="setMode('AI')" class="px-5 py-2 rounded-full font-semibold bg-blue-600 text-white">AI Search</button>
-                <button id="classicBtn" onclick="setMode('Classic')" class="px-5 py-2 rounded-full font-semibold bg-slate-100">Classic Search</button>
-                <button onclick="resetDemo()" class="ml-auto text-xs text-slate-400 hover:text-slate-600 underline">Reset Demo</button>
+    <main class="max-w-6xl mx-auto p-6 space-y-16">
+        <header>
+            <h1 class="text-4xl font-extrabold text-blue-900">AI DISCOVERY ENGINE</h1>
+            <p class="text-slate-500 text-lg">Evidence-driven discovery of photo retrieval problems and opportunities</p>
+            <p class="text-sm italic mt-2">Research dataset: 10 user responses</p>
+        </header>
+
+        <section id="findings">
+            <h2 class="text-2xl font-bold mb-6">WHAT THE RESEARCH REVEALS</h2>
+            <div id="findingsGrid" class="grid md:grid-cols-2 gap-6"></div>
+            <p class="mt-4 text-xs italic text-slate-500">“These findings represent patterns observed in this research sample and are hypotheses requiring further validation.”</p>
+        </section>
+
+        <section id="patterns">
+            <h2 class="text-2xl font-bold mb-4">MEMORY & SEARCH PATTERNS</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl border">
+                    <h3 class="font-bold border-b pb-2 mb-3">WHAT USERS REMEMBER</h3>
+                    <ul class="text-sm list-disc pl-4 space-y-1 text-slate-700"><li>Person identity — Evidence 002, 009</li><li>Known library location / folder — Evidence 003</li><li>Visual description — Evidence 008</li></ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl border">
+                    <h3 class="font-bold border-b pb-2 mb-3">WHAT USERS FORGOT</h3>
+                    <p class="text-sm">Explicitly forgotten: “No explicit forgotten information is recorded in this 10-response dataset.”</p>
+                    <p class="text-sm mt-3">Not stated / unknown: “The relevant fields are recorded as 'Not stated'.”</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border text-sm">
+                    <h3 class="font-bold border-b pb-2 mb-3">FORMULATIONS (Observed in research)</h3>
+                    <p class="italic mb-2">Memory Cue → Formulation → Outcome</p>
+                    <p>Person cue → Search by name → Retrieval problem</p>
+                    <p>Visual-description cue → Keyword search → Wrong results</p>
+                    <p>Known folder/location cue → Navigation through menus → Navigation friction</p>
+                </div>
             </div>
-            <p id="modeDesc" class="text-sm text-slate-500 mb-4 italic">AI Search — Demo Simulation: Natural-language search with AI interpretation.</p>
+        </section>
 
-            <div class="flex gap-2">
-                <input type="text" id="searchInput" placeholder="Try 'John', 'Paris', 'Dog', '2024'..." class="flex-grow p-3 border rounded-xl outline-blue-500">
-                <button onclick="performSearch()" class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-800">Search</button>
+        <section id="problems">
+            <h2 class="text-2xl font-bold mb-4">RETRIEVAL PROBLEMS</h2>
+            <div id="probCards" class="grid md:grid-cols-2 gap-4"></div>
+            <p class="mt-4 text-sm text-slate-500 italic">Evidence 007: Outside primary retrieval-problem ranking. Reason: Relevance to core retrieval research question is Low.</p>
+        </section>
+
+        <section id="comparison">
+            <h2 class="text-2xl font-bold mb-4">PROBLEM COMPARISON</h2>
+            <div class="bg-white p-6 rounded-xl border overflow-x-auto" id="compTable"></div>
+        </section>
+
+        <section id="opportunities">
+            <h2 class="text-2xl font-bold mb-4">OPPORTUNITY AREAS</h2>
+            <div id="oppCards" class="grid md:grid-cols-2 gap-6"></div>
+            <p class="mt-6 text-sm italic text-slate-600">“These opportunity areas are hypotheses derived from the current 10-response research sample and require further validation.”</p>
+        </section>
+
+        <section id="prototype" class="bg-slate-900 text-white p-8 rounded-3xl">
+            <h2 class="text-2xl font-bold mb-2">SOLUTION PROTOTYPE</h2>
+            <div class="text-sm mb-6 space-y-1 opacity-80 font-mono">
+                <p>SELECTED OPPORTUNITY: <strong>Search Predictability</strong></p>
+                <p>PROBLEM: <strong>Users reported difficulty reliably retrieving known photos when AI search produced inaccurate, presumptuous or wrong results.</strong></p>
+                <p>SOLUTION HYPOTHESIS: <strong>A predictable metadata-based search path may improve retrieval reliability when AI search fails.</strong></p>
+                <p>MVP: <strong>Classic Search</strong></p>
             </div>
-
-            <div id="filters" class="hidden mt-4 flex flex-wrap gap-3 p-4 bg-slate-50 rounded-xl border">
-                <select id="fYear" class="p-2 border rounded-lg text-sm"><option value="">Any Year</option><option value="2024">2024</option><option value="2023">2023</option></select>
-                <select id="fLoc" class="p-2 border rounded-lg text-sm"><option value="">Any Location</option><option value="Paris">Paris</option><option value="Beach">Beach</option></select>
-                <select id="fPerson" class="p-2 border rounded-lg text-sm"><option value="">Any Person</option><option value="John">John</option><option value="Sarah">Sarah</option></select>
+            <div class="bg-white text-slate-900 p-6 rounded-2xl">
+                <div class="flex gap-4 mb-4">
+                    <button id="aiBtn" onclick="setMode('AI')" class="px-5 py-2 rounded-full font-bold bg-blue-600 text-white">AI Search — Demo Simulation</button>
+                    <button id="classicBtn" onclick="setMode('Classic')" class="px-5 py-2 rounded-full font-bold bg-slate-100">Classic Search — Demo</button>
+                    <button onclick="resetDemo()" class="ml-auto text-xs underline text-slate-400">Reset Demo</button>
+                </div>
+                <div id="analytics" class="mb-4 text-xs font-mono bg-slate-100 p-2 rounded">[Analytics] Searches: 0 | Successful Retrievals: 0</div>
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="searchInput" placeholder="Try 'John', 'Paris', 'Dog'..." class="flex-grow p-3 border rounded-xl">
+                    <button onclick="performSearch()" class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold">Search</button>
+                </div>
+                <div id="filters" class="hidden flex flex-wrap gap-3 p-4 bg-slate-50 rounded-xl border mb-4">
+                    <select id="fYear" class="p-2 border rounded"><option value="">Any Year</option><option value="2024">2024</option><option value="2023">2023</option></select>
+                    <select id="fLoc" class="p-2 border rounded"><option value="">Any Location</option><option value="Paris">Paris</option><option value="Beach">Beach</option></select>
+                    <select id="fPerson" class="p-2 border rounded"><option value="">Any Person</option><option value="John">John</option><option value="Sarah">Sarah</option></select>
+                </div>
+                <div id="failureState" class="hidden bg-orange-50 border p-6 rounded-xl text-center mb-6">
+                    <p class="text-orange-800 font-bold mb-3">AI Search could not reliably retrieve this memory.</p>
+                    <button onclick="switchToClassicFromFailure()" class="bg-orange-600 text-white px-6 py-2 rounded-lg font-bold">Try Classic Search</button>
+                </div>
+                <div id="resultsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
             </div>
-        </div>
+        </section>
 
-        <div id="failureState" class="hidden bg-orange-50 border border-orange-200 p-6 rounded-xl text-center mb-6">
-            <p class="text-orange-800 font-medium mb-3">Can't find what you're looking for?</p>
-            <button onclick="switchToClassicFromFailure()" class="bg-orange-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-orange-700">Try Classic Search</button>
-        </div>
-        
-        <div id="switchMsg" class="hidden text-center text-sm text-blue-600 mb-4 font-medium italic">
-            Classic Search is active. Your search is preserved. Refine using metadata filters.
-        </div>
+        <section id="traceability">
+            <h2 class="text-2xl font-bold mb-4">DISCOVERY TRACEABILITY</h2>
+            <div class="bg-white p-8 rounded-xl border font-mono text-sm space-y-2">
+                <p>USER EVIDENCE (<span onclick="openModalList('001,004,005,008')" class="underline cursor-pointer text-blue-600">001, 004, 005, 008</span>)</p><p>↓</p>
+                <p>RETRIEVAL PROBLEM (Degradation of Search Accuracy)</p><p>↓</p>
+                <p>OPPORTUNITY (Search Predictability)</p><p>↓</p>
+                <p>SOLUTION HYPOTHESIS (A predictable metadata-based search path may improve retrieval reliability when AI search fails.)</p><p>↓</p>
+                <p>MVP (Classic Search)</p><p>↓</p>
+                <p>PROTOTYPE (AI Search → Failure → Try Classic Search → Classic Search → Retrieval)</p>
+            </div>
+        </section>
 
-        <div id="resultsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+        <section id="evidence">
+            <h2 class="text-2xl font-bold mb-4">EVIDENCE EXPLORER</h2>
+            <div class="bg-white p-6 rounded-xl border shadow-sm">
+                <div class="overflow-x-auto" id="evidenceTable"></div>
+            </div>
+        </section>
     </main>
 
     <script>
-        const photos = [
-            { id: 1, year: "2024", loc: "Paris", person: "John", cat: "Travel", desc: "John at Eiffel Tower", url: "https://images.unsplash.com/photo-1502602898657-34917651c87d?w=400" },
-            { id: 2, year: "2024", loc: "Beach", person: "John", cat: "Travel", desc: "John surfing", url: "https://images.unsplash.com/photo-1502680390469-375c88560341?w=400" },
-            { id: 3, year: "2023", loc: "Home", person: "Sarah", cat: "Family", desc: "Sarah Christmas dinner", url: "https://images.unsplash.com/photo-1512453979798-5ea26e676100?w=400" },
-            { id: 4, year: "2024", loc: "Beach", person: "Sarah", cat: "Nature", desc: "Sarah beach sunset", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400" },
-            { id: 5, year: "2024", loc: "Park", person: "None", cat: "Nature", desc: "Dog wearing a hat", url: "https://images.unsplash.com/photo-1518001488663-b3c9900c7322?w=400" },
-            { id: 6, year: "2023", loc: "Paris", person: "John", cat: "Travel", desc: "John Louvre", url: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=400" },
-            { id: 7, year: "2024", loc: "Home", person: "Sarah", cat: "Event", desc: "Sarah birthday party", url: "https://images.unsplash.com/photo-1527529482837-469817946ce5?w=400" },
-            { id: 8, year: "2023", loc: "Beach", person: "John", cat: "Travel", desc: "John beach trip", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400" },
-            { id: 9, year: "2024", loc: "Park", person: "John", cat: "Event", desc: "John park picnic", url: "https://images.unsplash.com/photo-1505672678657-cc7037c95e15?w=400" },
-            { id: 10, year: "2023", loc: "Home", person: "Sarah", cat: "Family", desc: "Sarah wedding ceremony", url: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400" },
-            { id: 11, year: "2024", loc: "Paris", person: "Sarah", cat: "Travel", desc: "Sarah Paris street", url: "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=400" },
-            { id: 12, year: "2023", loc: "Home", person: "None", cat: "Nature", desc: "Dog sleeping", url: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400" }
+        const research = [
+            {id:"001", scen:"General AI search", cont:"Photo", rem:"Not stated", forg:"Not stated", attempt:"AI Search", form:"Not stated", fail:"AI Misinterpretation / Presumptuous Results", goal:"Find a photo", pain:"Medium", opp:"Restore speed/accuracy of previous search performance", evType:"Explicit", rel:"High"},
+            {id:"002", scen:"Person-based retrieval", cont:"Photo", rem:"Name of the person", forg:"Not stated", attempt:"Person/Face Search", form:"Search by name", fail:"Facial Recognition Failure", goal:"Find photos of a specific person", pain:"High", opp:"Improve detection of foreground subjects", evType:"Explicit", rel:"High"},
+            {id:"003", scen:"Folder/Album retrieval", cont:"Photo", rem:"Folder name", forg:"Not stated", attempt:"Folder Navigation", form:"Click through menus", fail:"Navigation Friction", goal:"Access a specific folder", pain:"Medium", opp:"Reduce UI layers for folder access", evType:"Explicit", rel:"Medium"},
+            {id:"004", scen:"General AI search", cont:"Photo", rem:"Not stated", forg:"Not stated", attempt:"AI Search", form:"Not stated", fail:"Search Inaccuracy", goal:"Find a specific photo", pain:"High", opp:"Improve general search engine reliability", evType:"Explicit", rel:"High"},
+            {id:"005", scen:"General AI search", cont:"Photo", rem:"Not stated", forg:"Not stated", attempt:"AI Search", form:"Not stated", fail:"Search Inaccuracy", goal:"Find a specific photo", pain:"High", opp:"Increase recall accuracy to match legacy search", evType:"Explicit", rel:"High"},
+            {id:"006", scen:"Photo organization", cont:"Photo", rem:"Not stated", forg:"Not stated", attempt:"Person/Face Search", form:"Not stated", fail:"Person Grouping Failure", goal:"Organize/Search photos", pain:"Medium", opp:"Allow user to disable/manage automated groupings", evType:"Explicit", rel:"Low"},
+            {id:"007", scen:"Sync/backup retrieval", cont:"Photo", rem:"Not stated", forg:"Not stated", attempt:"Unknown", form:"Not stated", fail:"Sync / Backup Failure", goal:"Access/Share photos across devices", pain:"High", opp:"Resolve multi-device sync latency and upload failures", evType:"Explicit", rel:"Low"},
+            {id:"008", scen:"Visual-description retrieval", cont:"Photo", rem:"Visual description (\"Dog in a hat\")", forg:"Not stated", attempt:"AI Search", form:"Keyword Search (\"Dog in a hat\")", fail:"Wrong Results", goal:"Find a photo via description", pain:"High", opp:"Fix search regression to ensure consistent results", evType:"Explicit", rel:"High"},
+            {id:"009", scen:"Person-based retrieval", cont:"Photo", rem:"Name of person", forg:"Not stated", attempt:"Person/Face Search", form:"Search by name", fail:"Search Inaccuracy", goal:"Find photos of a person", pain:"Medium", opp:"Standardize search interpretation between AI and user", evType:"Explicit", rel:"High"},
+            {id:"010", scen:"Photo organization", cont:"Photo", rem:"Not stated", forg:"Not stated", attempt:"Folder/Album retrieval", form:"Not stated", fail:"Organization / Album Failure", goal:"Manage photo sorting", pain:"Medium", opp:"Add toggle to opt-out of automatic album sorting", evType:"Explicit", rel:"Low"}
         ];
 
-        let stats = { searches: 0, ai: 0, classic: 0, switches: 0, success: 0, zero: 0 }, retrievedIds = new Set();
-        let mode = 'AI';
+        const photos = [
+            {id:1, year:"2024", loc:"Paris", person:"John", desc:"John at Eiffel Tower"}, {id:2, year:"2024", loc:"Beach", person:"John", desc:"John surfing"},
+            {id:3, year:"2023", loc:"Home", person:"Sarah", desc:"Sarah Christmas dinner"}, {id:4, year:"2024", loc:"Beach", person:"Sarah", desc:"Sarah beach sunset"},
+            {id:5, year:"2024", loc:"Park", person:"None", desc:"Dog wearing a hat"}, {id:6, year:"2023", loc:"Paris", person:"John", desc:"John Louvre"},
+            {id:7, year:"2024", loc:"Home", person:"Sarah", desc:"Sarah birthday party"}, {id:8, year:"2023", loc:"Beach", person:"John", desc:"John beach trip"},
+            {id:9, year:"2024", loc:"Park", person:"John", desc:"John park picnic"}, {id:10, year:"2023", loc:"Home", person:"Sarah", desc:"Sarah wedding ceremony"},
+            {id:11, year:"2024", loc:"Paris", person:"Sarah", desc:"Sarah Paris street"}, {id:12, year:"2023", loc:"Home", person:"None", desc:"Dog sleeping"}
+        ];
 
-        function setMode(newMode) {
-            mode = newMode;
-            document.getElementById('aiBtn').className = mode === 'AI' ? 'px-5 py-2 rounded-full font-semibold bg-blue-600 text-white' : 'px-5 py-2 rounded-full font-semibold bg-slate-100';
-            document.getElementById('classicBtn').className = mode === 'Classic' ? 'px-5 py-2 rounded-full font-semibold bg-blue-600 text-white' : 'px-5 py-2 rounded-full font-semibold bg-slate-100';
-            document.getElementById('modeDesc').innerText = mode === 'AI' ? "AI Search — Demo Simulation: Natural-language search with AI interpretation." : "Classic Search — Demo: Predictable metadata-based search. You control the filters.";
-            document.getElementById('filters').style.display = mode === 'Classic' ? 'flex' : 'none';
+        function renderEvidence() {
+            let html = `<table class="w-full text-xs text-left"><thead class="bg-slate-100"><tr>
+                <th class="p-2">ID</th><th class="p-2">Scenario</th><th class="p-2">Fail</th><th class="p-2">Goal</th><th class="p-2">Action</th>
+            </tr></thead><tbody>`;
+            research.forEach(r => html += `<tr><td class="p-2 font-bold">${r.id}</td><td class="p-2">${r.scen}</td><td class="p-2">${r.fail.substring(0,25)}...</td><td class="p-2">${r.goal}</td><td class="p-2"><button onclick="openModal('${r.id}')" class="text-blue-600 underline">Details</button></td></tr>`);
+            document.getElementById('evidenceTable').innerHTML = html + `</tbody></table>`;
         }
 
+        function openModal(id) {
+            const r = research.find(x => x.id === id);
+            document.getElementById('modalBody').innerHTML = `<h3 class="font-bold text-xl mb-4">Evidence Record ${r.id}</h3>` + 
+                Object.keys(r).map(k => `<p class="mb-2 text-sm"><strong>${k.toUpperCase()}:</strong> ${r[k]}</p>`).join('') +
+                `<button onclick="document.getElementById('evidenceModal').style.display='none'" class="mt-4 bg-slate-900 text-white px-4 py-2 rounded">Close</button>`;
+            document.getElementById('evidenceModal').style.display = 'flex';
+        }
+
+        function openModalList(ids) {
+            const idList = ids.split(',').map(x => x.trim());
+            document.getElementById('modalBody').innerHTML = `<h3 class="font-bold text-xl mb-4">Supporting Evidence</h3>` + 
+                idList.map(id => `<div class="mb-4 border-b pb-2"><p><strong>Record ${id}:</strong></p><p class="text-xs text-slate-600">${Object.entries(research.find(x=>x.id==id)).map(([k,v])=>`<strong>${k.toUpperCase()}:</strong> ${v}`).join('<br>')}</p></div>`).join('') +
+                `<button onclick="document.getElementById('evidenceModal').style.display='none'" class="mt-4 bg-slate-900 text-white px-4 py-2 rounded">Close</button>`;
+            document.getElementById('evidenceModal').style.display = 'flex';
+        }
+
+        document.getElementById('findingsGrid').innerHTML = [
+            {t:"Users rely on partial memory cues to retrieve photos", d:"The research shows that users approach photo retrieval using remembered cues such as a person, a known library location, or a visual description.", i:"002, 003, 008, 009"},
+            {t:"Retrieval becomes unreliable when search interpretation does not match user intent", d:"Several responses describe situations where the user's retrieval attempt does not produce the expected result, including inaccurate, presumptuous or wrong results.", i:"001, 004, 005, 008, 009"},
+            {t:"People are an important retrieval target but recognition is not consistently reliable", d:"The research includes failures involving finding, recognizing or grouping people in the photo library.", i:"002, 006, 009"},
+            {t:"Known photo locations can still create retrieval friction", d:"A response describes friction when navigating through multiple interface layers to reach a known folder.", i:"003"}
+        ].map(f => `<div class="bg-white p-6 rounded-xl border"><strong>${f.t}</strong><p class="text-sm my-2">${f.d}</p><p class="text-xs text-slate-500 underline cursor-pointer" onclick="openModalList('${f.i}')">View Evidence: ${f.i}</p></div>`).join('');
+
+        document.getElementById('probCards').innerHTML = [
+            {n:"Degradation of Search Accuracy", i:"001, 004, 005, 008", a:4, p:"High", f:"AI Misinterpretation / Presumptuous Results; Search Inaccuracy; Wrong Results", s:"General AI search / Visual-description retrieval", d:"Users report inaccurate, presumptuous or wrong search results when attempting to retrieve known photos or memories."},
+            {n:"Failure of People-Based Retrieval", i:"002, 006, 009", a:3, p:"Medium–High", f:"Facial Recognition Failure; Person Grouping Failure; Search Inaccuracy", s:"Person-based retrieval / Photo organization", d:"Users experience problems finding or correctly grouping photos of people."},
+            {n:"Lack of Control in Auto-Organization", i:"006, 010", a:2, p:"Medium", f:"Person Grouping Failure; Organization / Album Failure", s:"Photo organization", d:"Users experience problems with automated grouping/organization and want greater control."},
+            {n:"Navigation Friction", i:"003", a:1, p:"Medium", f:"Navigation Friction", s:"Folder/Album retrieval", d:"Users need to navigate through multiple UI layers to reach known photo locations."}
+        ].map(p=>`<div class="bg-white p-6 rounded-xl border shadow-sm"><strong>${p.n}</strong><p class="text-xs text-slate-500 mt-1">Users: ${p.a} | Pain: ${p.p}</p><p class="text-xs mt-2 text-slate-600">${p.d}</p><p class="text-xs mt-2">Evidence: ${p.i.split(', ').map(id=>`<span onclick="openModal('${id}')" class="underline cursor-pointer text-blue-600">${id}</span>`).join(', ')}</p></div>`).join('');
+        
+        document.getElementById('compTable').innerHTML = `<table class="w-full text-sm"><thead><tr class="border-b text-left"><th class="p-2">Problem</th><th class="p-2">Users</th><th class="p-2">Pain</th><th class="p-2">Evidence IDs</th></tr></thead><tbody>` +
+            `<tr><td class="p-2">Search Accuracy</td><td class="p-2">4</td><td class="p-2">High</td><td class="p-2">001, 004, 005, 008</td></tr>` +
+            `<tr><td class="p-2">People Retrieval</td><td class="p-2">3</td><td class="p-2">Med-High</td><td class="p-2">002, 006, 009</td></tr>` +
+            `<tr><td class="p-2">Auto-Org Control</td><td class="p-2">2</td><td class="p-2">Medium</td><td class="p-2">006, 010</td></tr>` +
+            `<tr><td class="p-2">Navigation</td><td class="p-2">1</td><td class="p-2">Medium</td><td class="p-2">003</td></tr></tbody></table>`;
+
+        document.getElementById('oppCards').innerHTML = [
+            {n:"Search Predictability", i:"001, 004, 005, 008", s:"High", c:"High", sc:"Large", st:"Users need a predictable and reliable way to retrieve known photos when AI search produces inaccurate or unexpected results.", w:"This opportunity is supported by four high-relevance responses describing inaccurate results."},
+            {n:"Subject Recognition Accuracy", i:"002, 006, 009", s:"High", c:"High", sc:"High", st:"Users need more reliable recognition and retrieval of people in their photo libraries.", w:"The supporting responses show failures in finding or grouping people."},
+            {n:"Retrieval Control & Personalization", i:"006, 010", s:"Medium", c:"Medium", sc:"Medium", st:"Users need more control over automated grouping and organization of their personal photo libraries.", w:"The supporting responses indicate problems with automated organization."},
+            {n:"Navigation Efficiency", i:"003", s:"Medium", c:"Medium", sc:"Small", st:"Users need faster access to known photo locations without navigating through unnecessary UI layers.", w:"The supporting response explicitly describes navigation friction."}
+        ].map(o=>`<div class="bg-white p-6 rounded-xl border"><strong>${o.n}</strong><p class="text-xs text-slate-500 mt-1">Severity: ${o.s} | Confidence: ${o.c} | Scale: ${o.sc}</p><p class="text-sm my-3">${o.st}</p><button onclick="openModalList('${o.i}')" class="text-blue-600 text-sm underline">View supporting evidence</button></div>`).join('');
+
+        // Prototype functions
+        function setMode(m) { mode = m; document.getElementById('filters').style.display = (m==='Classic'?'flex':'none'); document.getElementById('aiBtn').className = (mode==='AI'?'px-5 py-2 rounded-full font-bold bg-blue-600 text-white':'px-5 py-2 rounded-full font-bold bg-slate-100'); document.getElementById('classicBtn').className = (mode==='Classic'?'px-5 py-2 rounded-full font-bold bg-blue-600 text-white':'px-5 py-2 rounded-full font-bold bg-slate-100'); }
         function performSearch() {
-            stats.searches++;
-            mode === 'AI' ? stats.ai++ : stats.classic++;
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const grid = document.getElementById('resultsGrid');
-            grid.innerHTML = '';
-            let results = [];
-
-            if(mode === 'AI') {
-                if(query.includes('john') && query.includes('beach')) results = [photos[1], photos[7]]; 
-                else if(query.includes('dog')) results = [photos[4]];
-                else if(query.includes('paris')) results = [photos[0], photos[5], photos[10]];
-                else if(query.includes('birthday')) results = []; 
-                else if(query) results = photos.filter(p => p.desc.toLowerCase().includes(query));
+            stats.s++; let q = document.getElementById('searchInput').value.toLowerCase(), grid = document.getElementById('resultsGrid'), res=[];
+            if(mode==='AI') {
+                if(q.includes('john') && q.includes('beach')) res=[photos[1], photos[7]];
+                else if(q.includes('dog')) res=[photos[4]];
+                else if(q.includes('paris')) res=[photos[0], photos[5], photos[10]];
+                else if(q==='birthday') res=[];
+                else res=photos.filter(p=>p.desc.toLowerCase().includes(q));
             } else {
-                const y = document.getElementById('fYear').value;
-                const l = document.getElementById('fLoc').value;
-                const p = document.getElementById('fPerson').value;
-                results = photos.filter(ph => 
-                    (ph.desc.toLowerCase().includes(query) || ph.loc.toLowerCase().includes(query) || ph.person.toLowerCase().includes(query) || ph.year == query) &&
-                    (!y || ph.year == y) && (!l || ph.loc == l) && (!p || ph.person == p)
-                );
+                let y=document.getElementById('fYear').value, l=document.getElementById('fLoc').value, p=document.getElementById('fPerson').value;
+                res = photos.filter(ph => (ph.desc.toLowerCase().includes(q) || ph.loc.toLowerCase().includes(q) || ph.person.toLowerCase().includes(q)) && (!y||ph.year==y) && (!l||ph.loc==l) && (!p||ph.person==p));
             }
-
-            if(results.length === 0) {
-                stats.zero++;
-                grid.innerHTML = '<p class="col-span-full text-center py-10">No results found.</p>';
-                if(mode === 'AI') document.getElementById('failureState').style.display = 'block';
-            } else {
-                document.getElementById('failureState').style.display = 'none';
-                results.forEach(p => {
-                    grid.innerHTML += `<div onclick="recordSuccess(${p.id})" class="cursor-pointer bg-white p-2 rounded-xl border shadow-sm hover:ring-2 ring-blue-500">
-                        <img src="${p.url}" class="w-full h-40 object-cover rounded-lg">
-                        <p class="text-sm font-bold mt-2">${p.desc}</p>
-                        <p class="text-[10px] text-slate-400 mt-1">${mode === 'AI' ? 'Possible Match' : 'Metadata Match'}</p>
-                    </div>`;
-                });
-            }
+            grid.innerHTML = res.length ? res.map(p => `<div onclick="if(!retrieved.has(${p.id})){retrieved.add(${p.id});stats.suc++;updateStats()}" class="border p-4 rounded-xl cursor-pointer hover:bg-slate-50 transition shadow-sm bg-white"><strong>${p.desc}</strong><br><span class="text-xs text-slate-500">${p.year} | ${p.loc} | ${p.person}</span></div>`).join('') : '<p class="col-span-full text-center">No results found.</p>';
+            if(mode==='AI' && res.length===0) document.getElementById('failureState').style.display = 'block';
+            else document.getElementById('failureState').style.display = 'none';
             updateStats();
         }
-
-        function recordSuccess(id) { if(!retrievedIds.has(id)) { stats.success++; retrievedIds.add(id); updateStats(); } }
-        function switchToClassicFromFailure() { stats.switches++; setMode('Classic'); document.getElementById('failureState').style.display = 'none'; document.getElementById('switchMsg').style.display = 'block'; performSearch(); }
+        function switchToClassicFromFailure() { setMode('Classic'); document.getElementById('failureState').style.display = 'none'; performSearch(); }
         function resetDemo() { location.reload(); }
-        function updateStats() { document.getElementById('analytics').innerText = `[Demo Analytics — Simulated] Searches: ${stats.searches} | Successful Retrievals: ${stats.success} | Zero Results: ${stats.zero} | AI→Classic Switches: ${stats.switches}`; }
+        function updateStats() { document.getElementById('analytics').innerText = `[Analytics] Searches: ${stats.s} | Successful Retrievals: ${stats.suc}`; }
     </script>
 </body>
 </html>
